@@ -1,0 +1,71 @@
+#!/usr/bin/env python
+# Like go get but without the need for go.
+
+import sys
+import os
+import subprocess
+import urlparse
+import tempfile
+import string
+
+
+def eprint(msg):
+    sys.stderr.write(msg + '\n')
+
+
+USAGE = """Usage: git get URL
+Like 'go get' without the go. Clone the repository URL into directories using the host, user, and project name.
+Set $GIT_PATH as the base directory to clone repositories into.
+"""
+
+if len(sys.argv) == 1:
+    eprint(USAGE)
+    sys.exit(1)
+
+git_url = sys.argv[1]
+base_dir = os.getenv('GIT_PATH')
+
+if git_url == '-h':
+    eprint(USAGE)
+    sys.exit(0)
+
+if not base_dir:
+    eprint('$GIT_PATH must be set')
+    sys.exit(1)
+
+if not os.path.exists(base_dir):
+    eprint('$GIT_PATH is set to %s, which does not exist.' % base_dir)
+    sys.exit(1)
+
+url_for_path_parsing = git_url
+if git_url.startswith('git@'):
+    url_for_path_parsing = 'https://' + git_url.replace(':', '/')
+
+parsed_url = urlparse.urlparse(url_for_path_parsing)
+
+if not parsed_url.scheme:
+    eprint('%s is not a valid git url. Skipping.' % git_url)
+    sys.exit(1)
+
+if not parsed_url.path.endswith('.git'):
+    eprint('%s is not a valid git url. Skipping.' % git_url)
+    sys.exit(1)
+
+pathend = string.strip(os.path.splitext(parsed_url.path)[0], '/')
+path = os.path.join(base_dir, parsed_url.hostname, pathend)
+
+if os.path.exists(path):
+    eprint('Path %s already exists.' % path)
+    sys.exit(1)
+
+temp_dir = tempfile.mkdtemp()
+
+subprocess.call(['git', 'clone', git_url, temp_dir])
+
+parent_dir = os.path.dirname(path)
+if not os.path.exists(parent_dir):
+    os.makedirs(parent_dir)
+
+os.rename(temp_dir, path)
+
+print(path)
