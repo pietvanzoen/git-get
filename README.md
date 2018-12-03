@@ -1,4 +1,4 @@
-# Git get
+# Git get [![Build Status](https://travis-ci.com/pietvanzoen/git-get.svg?branch=master)](https://travis-ci.com/pietvanzoen/git-get)
 
 Like `go get`, `git-get` organizes repos in directories according to 1) host, 2) user, and 3) project name.
 
