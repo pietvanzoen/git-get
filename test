@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-set -e
-
 main() {
+  set -e
+
   echo "==> Testing git-get"
-  GIT_PATH="$(pwd)./test-repos"
+  GIT_PATH="$(pwd)/test-repos"
   rm -rf $GIT_PATH
   mkdir -p $GIT_PATH
-  cd "$(./git-get https://github.com/pietvanzoen/git-get.git)"
+  cd "$(GIT_PATH=$GIT_PATH ./git-get https://github.com/pietvanzoen/git-get.git)"
 
   assert_equal $(pwd) "$GIT_PATH/github.com/pietvanzoen/git-get" "sets correct repo path"
 }
