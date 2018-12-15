@@ -2,7 +2,7 @@
 set -e
 
 INSTALL_DIR="${INSTALL_DIR:-$HOME/bin}"
-REAL_INSTALL_DIR="$(realpath "$INSTALL_DIR")"
+REAL_INSTALL_DIR="$(readlink -f "$INSTALL_DIR")"
 GIT_GET_BIN="$REAL_INSTALL_DIR/git-get"
 
 VERSION="$(git describe --tags)"
