@@ -14,9 +14,10 @@ def eprint(msg):
 
 
 VERSION = "git-get %VERSION%"
-USAGE = """Usage: git get URL
-Like 'go get' without the go. Clone the repository URL into directories using the host, user, and project name.
-Set $GIT_PATH as the base directory to clone repositories into.
+USAGE = """usage: git get [flags] <git-clone-url>
+
+  -v    print version
+  -h    print help
 """
 
 if len(sys.argv) == 1:
