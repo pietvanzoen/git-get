@@ -41,18 +41,13 @@ url_for_path_parsing = git_url
 if git_url.startswith('git@'):
     url_for_path_parsing = 'https://' + git_url.replace(':', '/')
 
-parsed_url = urlparse.urlparse(url_for_path_parsing)
-
-if not parsed_url.scheme:
-    eprint('%s is not a valid git url. Skipping.' % git_url)
+try:
+    parsed_url = urlparse.urlparse(url_for_path_parsing)
+    pathend = string.strip(os.path.splitext(parsed_url.path)[0], '/')
+    path = os.path.join(base_dir, parsed_url.hostname, pathend)
+except Exception:
+    eprint('Could not parse url %s' % git_url)
     sys.exit(1)
-
-if not parsed_url.path.endswith('.git'):
-    eprint('%s is not a valid git url. Skipping.' % git_url)
-    sys.exit(1)
-
-pathend = string.strip(os.path.splitext(parsed_url.path)[0], '/')
-path = os.path.join(base_dir, parsed_url.hostname, pathend)
 
 if os.path.exists(path):
     eprint('Path %s already exists.' % path)
