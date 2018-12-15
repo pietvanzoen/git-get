@@ -1,0 +1,18 @@
+#!/bin/bash
+set -e
+
+INSTALL_DIR="${INSTALL_DIR:-$HOME/bin}"
+GIT_GET_BIN="$INSTALL_DIR/git-get"
+
+VERSION="$(git describe --tags)"
+sed "s/%VERSION%/$VERSION/" git-get >"$GIT_GET_BIN"
+chmod +x "$GIT_GET_BIN"
+
+echo "git-get installed to $GIT_GET_BIN"
+
+if [[ "$PATH" != *"$INSTALL_DIR"* ]]; then
+  echo "Warning: $INSTALL_DIR not found in \$PATH"
+  echo "
+  Add the following to your shell profile:
+    export PATH=\"$INSTALL_DIR:\$PATH\""
+fi
