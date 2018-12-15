@@ -9,10 +9,11 @@ Like `go get`, `git-get` organizes repos in directories according to 1) host, 2)
 ## Installation
 
 ```bash
-cd <where-you-want-the-script>
-curl -O https://gist.githubusercontent.com/pietvanzoen/92c47aa810506ec113e42667fc6e1b7d/raw/git-get
-chmod +x git-get
-git config --global alias.get '!<path-to-script>/git-get'
+git clone https://github.com/pietvanzoen/git-get.git
+cd git-get
+INSTALL_DIR=<path to directory in your $PATH> ./install
 ```
 
-Then add `export GIT_PATH=$HOME/repos` into your shell profile such as `.bash_profile`, `.bashrc` or `.zshrc` and close and restart your shell.
+If `$INSTALL_DIR` is not specified it will default to `$HOME/bin`.
+
+That's it! `git get` automatically call `git-get`.
