@@ -55,7 +55,10 @@ if os.path.exists(path):
 
 temp_dir = tempfile.mkdtemp()
 
-subprocess.call(['git', 'clone', git_url, temp_dir])
+try:
+    subprocess.check_call(['git', 'clone', git_url, temp_dir])
+except subprocess.CalledProcessError:
+    sys.exit(1)
 
 parent_dir = os.path.dirname(path)
 if not os.path.exists(parent_dir):
