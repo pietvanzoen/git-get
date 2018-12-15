@@ -1,3 +1,13 @@
 language: generic
 script:
   - ./test
+after_success:
+  - curl -sL scripts.piet.me/ci/release | bash
+deploy:
+  provider: releases
+  api_key: "$GITHUB_TOKEN"
+  on:
+    tags: true
+env:
+  global:
+    secure: f8HZfrfDtsXxu73ZoUoz6hWC12bxVOeRxrN1rHYvT5xMUUsmFoI+kpY0dm1ASUocwXgEfQy7R45GPxX6Sk5wj2TEEh1XuvAqwzi7151I4qZEzy41m5dCyD2ltxTpYQ8Ih3Nna7uy7c1S7mghMR7kLEGFdnIkZ3RNjik3oIxMwS4d8b6Bq8cI8+BfY83tCc+2qDakGINtn3XR6HFFWdDThtRnEKepBpnEd9ieKQTUT7TnRc6OfWugEvCnSIHpS8HvOlYb2RYg7qzkdCgSp1sUW0+SA8Z9m3X37ql7RF8dW2qJN9kNrrir/sJ5JjtGT8mfqZWLDLvvG8J53AcFafNn3wn3D4S+e4fHHfF3pv5SLjgVsnxoXPzdC8mO3HLWfVCwzgfST5ahl3714hPEPma1FP8Cl83BeIBGovaRv4Fqxt1nc8yVD2mAYBfS4BLmemunjqDjEvgH0f7zgEZYuB2HtMzG0lTqMKnE36l2gc1Uf084Rgcix9ZvikLxFoW280Sq5RqFKduogyezE4jBmcH2XdZDNoC1TbitFCBbkgIhOKoSZz3CrkPQz0JHeEvzHsedRJKgjHKZMd9h0GutP7034BTKUeVfEOQ/khkzWjBJb8DdjCb4jn/JQiR8DWcSdxTkr8xrhjRpraIuvAjOyjry6WDK9gJf/j384MBsFMsePQU=
