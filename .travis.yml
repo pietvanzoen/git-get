@@ -3,7 +3,7 @@ before_script:
   - curl -sL scripts.piet.me/ci/setup-git | bash
 script:
   - ./test
-after_success:
+after_script:
   - curl -sL scripts.piet.me/ci/release | bash
 deploy:
   provider: releases
