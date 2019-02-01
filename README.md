@@ -21,4 +21,9 @@ That's it! `git get` automatically call `git-get`.
 ## Tips
 
 * Use `git get` alongside [autojump](https://github.com/wting/autojump) to effortlessly navigate your folder structure.
-* `git get` will only output the cloned directory path to stdout. So you can setup a helper function in your dotfiles like this for easy cloning: `gg() { cd $(git get $1) }`
+* Clone and change directory in the same command. Add this to your shell environment files: `gg() { cd $(git get $1) }`
+
+## See also
+
+* [ghq](https://github.com/motemen/ghq) - A more feature full approach to managing repos in a `go get` way. Written in go.
+* [h](https://github.com/zimbatm/h) - Combines the ideas of `git get` with `autojump` into one package. Written in python.
