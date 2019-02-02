@@ -2,6 +2,7 @@
 main() {
   set -e
   TEST_DIR="$(mktemp -d)"
+  GIT_PATH="$TEST_DIR/repos"
 
   echo "==> Testing install"
   export INSTALL_DIR="$TEST_DIR/bin"
@@ -9,17 +10,27 @@ main() {
   ./install
   assert_exists "$INSTALL_DIR/git-get" "git-get was installed"
 
-  echo "==> Testing git-get"
-  GIT_PATH="$TEST_DIR/repos"
-  rm -rf $GIT_PATH
-  mkdir -p $GIT_PATH
-  cd "$(GIT_PATH=$GIT_PATH $INSTALL_DIR/git-get https://github.com/pietvanzoen/git-get.git)"
+  (
+    echo "==> Testing git-get"
+    rm -rf $GIT_PATH
+    mkdir -p $GIT_PATH
+    cd "$(GIT_PATH=$GIT_PATH $INSTALL_DIR/git-get https://github.com/pietvanzoen/git-get.git)"
 
-  assert_equal $(pwd) "$GIT_PATH/github.com/pietvanzoen/git-get" "sets correct repo path"
+    assert_equal $(pwd) "$GIT_PATH/github.com/pietvanzoen/git-get" "sets correct repo path"
+  )
+
+  (
+    echo "==> Testing default prefix"
+    rm -rf $GIT_PATH
+    mkdir -p $GIT_PATH
+
+    GIT_PATH=$GIT_PATH GIT_GET_DEFAULT_PREFIX="https://github.com/" $INSTALL_DIR/git-get pietvanzoen/hint
+
+    assert_exists "$GIT_PATH/github.com/pietvanzoen/hint/.git" "clones repo using default prefix"
+  )
 }
 
-
-assert_equal () {
+assert_equal() {
   if [[ "$1" != "$2" ]]; then
     echo "FAIL: $3"
     echo -e "  expected $2 \n  but got  $1"

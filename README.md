@@ -2,9 +2,28 @@
 
 Like `go get`, `git-get` organizes repos in directories matching the path of the clone url.
 
-## Example
+## Usage
 
 `git get git@github.com:pietvanzoen/dotfiles.git` will clone the project into `$GIT_PATH/github.com/pietvanzoen/dotfiles`.
+
+## Configuration
+
+The following environment variables configure `git get` behavior:
+
+### `GIT_PATH` - required
+
+Path to directory to clone into.
+
+### `GIT_GET_DEFAULT_PREFIX` - optional
+
+Configure a default prefix for cloning.
+
+E.g: This will clone the repo `https://github.com/pietvanzoen/git-get.git`:
+
+```shell
+export GIT_GET_DEFAULT_PREFIX=https://github.com/
+git get pietvanzoen/git-get
+```
 
 ## Installation
 

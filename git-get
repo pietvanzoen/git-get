@@ -43,6 +43,11 @@ if not os.path.exists(base_dir):
     eprint('$GIT_PATH is set to %s, which does not exist.' % base_dir)
     sys.exit(1)
 
+default_prefix = os.getenv('GIT_GET_DEFAULT_PREFIX')
+if not git_url.endswith('.git') and default_prefix:
+    git_url = default_prefix + git_url + '.git'
+    eprint('Cloning %s' % git_url)
+
 url_for_path_parsing = git_url
 if git_url.startswith('git@'):
     url_for_path_parsing = 'https://' + git_url.replace(':', '/')
