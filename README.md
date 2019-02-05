@@ -40,7 +40,7 @@ That's it! `git get` automatically call `git-get`.
 ## Tips
 
 * Use `git get` alongside [autojump](https://github.com/wting/autojump) to effortlessly navigate your folder structure.
-* Clone and change directory in the same command. Add this to your shell environment files: `gg() { cd $(git get $1) }`
+* Clone and change directory in the same command. Add this to your shell environment files: `gg() { dir="$(git get $1)"; [[ -n "$dir" ]] && cd $dir }`
 
 ## See also
 
