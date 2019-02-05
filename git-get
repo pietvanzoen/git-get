@@ -63,13 +63,17 @@ if os.path.exists(path):
     eprint('Path %s already exists.' % path)
     sys.exit(1)
 
+created_parent_dir = False
 parent_dir = os.path.dirname(path)
 if not os.path.exists(parent_dir):
     os.makedirs(parent_dir)
+    created_parent_dir = True
 
 try:
     subprocess.check_call(['git', 'clone', git_url, path])
 except subprocess.CalledProcessError:
+    if created_parent_dir:
+        os.rmdir(parent_dir)
     sys.exit(1)
 
 print(path)
