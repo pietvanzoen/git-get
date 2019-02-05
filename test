@@ -1,33 +1,41 @@
 #!/usr/bin/env bash
 main() {
   set -e
-  TEST_DIR="$(mktemp -d)"
-  GIT_PATH="$TEST_DIR/repos"
-
-  echo "==> Testing install"
-  export INSTALL_DIR="$TEST_DIR/bin"
-  mkdir -p $INSTALL_DIR
-  ./install
-  assert_exists "$INSTALL_DIR/git-get" "git-get was installed"
 
   (
     echo "==> Testing git-get"
-    rm -rf $GIT_PATH
-    mkdir -p $GIT_PATH
-    cd "$(GIT_PATH=$GIT_PATH $INSTALL_DIR/git-get https://github.com/pietvanzoen/git-get.git)"
-
+    setup
+    cd "$($INSTALL_DIR/git-get https://github.com/pietvanzoen/git-get.git)"
     assert_equal $(pwd) "$GIT_PATH/github.com/pietvanzoen/git-get" "sets correct repo path"
   )
 
   (
     echo "==> Testing default prefix"
-    rm -rf $GIT_PATH
-    mkdir -p $GIT_PATH
-
-    GIT_PATH=$GIT_PATH GIT_GET_DEFAULT_PREFIX="https://github.com/" $INSTALL_DIR/git-get pietvanzoen/hint
-
+    setup
+    export GIT_GET_DEFAULT_PREFIX="https://github.com/"
+    $INSTALL_DIR/git-get pietvanzoen/hint
     assert_exists "$GIT_PATH/github.com/pietvanzoen/hint/.git" "clones repo using default prefix"
   )
+}
+
+setup() {
+  TEST_DIR="$(mktemp -d)"
+  export GIT_PATH="$TEST_DIR/repos"
+  export INSTALL_DIR="$TEST_DIR/bin"
+  mkdir -p $INSTALL_DIR
+  mkdir -p $GIT_PATH
+  ./install
+  assert_exists "$INSTALL_DIR/git-get" "git-get was installed"
+}
+
+assert() {
+  if ! ($1); then
+    echo "FAIL: $2"
+    echo -e "  expected $1 to pass"
+    exit 1
+  fi
+  echo "PASS: $2"
+
 }
 
 assert_equal() {
@@ -43,6 +51,15 @@ assert_exists() {
   if ! [[ -s "$1" ]]; then
     echo "FAIL: $2"
     echo -e "  expected $1 to exist with a size greater than zero"
+    exit 1
+  fi
+  echo "PASS: $2"
+}
+
+assert_not_exists() {
+  if [[ -s "$1" ]]; then
+    echo "FAIL: $2"
+    echo -e "  expected $1 not to exist"
     exit 1
   fi
   echo "PASS: $2"
