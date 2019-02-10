@@ -23,9 +23,9 @@ main() {
     $INSTALL_DIR/git-get https://github.com/pietvanzoen/wibble.git || true
     assert_not_exists "$GIT_PATH/github.com/pietvanzoen" "does not create parent directory for failed clone"
 
-    $INSTALL_DIR/git-get https://github.com/pietvanzoen/hint.git || true
+    $INSTALL_DIR/git-get https://github.com/pietvanzoen/hint.git
     $INSTALL_DIR/git-get https://github.com/pietvanzoen/wibble.git || true
-    assert_exists "$GIT_PATH/github.com/pietvanzoen/hint" "does not remote parent directory for failed clone when another repo exists"
+    assert_exists "$GIT_PATH/github.com/pietvanzoen/hint" "does not remove parent directory for failed clone when another repo exists"
   )
 }
 
