@@ -60,8 +60,9 @@ except Exception:
     sys.exit(1)
 
 if os.path.exists(path):
-    eprint('Path %s already exists.' % path)
-    sys.exit(1)
+    eprint('Repository %s was already cloned.' % git_url)
+    print(path)
+    sys.exit(0)
 
 created_parent_dir = False
 parent_dir = os.path.dirname(path)

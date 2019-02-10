@@ -27,6 +27,14 @@ main() {
     $INSTALL_DIR/git-get https://github.com/pietvanzoen/wibble.git || true
     assert_exists "$GIT_PATH/github.com/pietvanzoen/hint" "does not remove parent directory for failed clone when another repo exists"
   )
+
+  (
+    echo "==> Testing when path exists"
+    setup
+    $INSTALL_DIR/git-get https://github.com/pietvanzoen/hint.git
+    cd "$($INSTALL_DIR/git-get https://github.com/pietvanzoen/hint.git)"
+    assert_equal $(pwd) "$GIT_PATH/github.com/pietvanzoen/hint" "returns repo path when it has already been cloned"
+  )
 }
 
 setup() {
