@@ -4,6 +4,7 @@
 import sys
 import os
 import subprocess
+import argparse
 from urllib.parse import urlparse
 
 
@@ -11,64 +12,72 @@ def eprint(msg):
     sys.stderr.write(msg + '\n')
 
 
-VERSION = "git-get %VERSION%"
-USAGE = """usage: git get [flags] <git-clone-url>
+parser = argparse.ArgumentParser(description='A tool for creating an organised directory structure based on a git repos URL and cloning the repo into it.')
+parser.add_argument('-v', '--version', action='version', version=f'{parser.prog} %VERSION%', help='print version')
+parser.add_argument('-f', '--force', action='store_true', help='delete and reclone repo')
+parser.add_argument('-d', '--directory', action='store_true', help='print directory of git repo')
+parser.add_argument('git_url', type=str, help='URL to the git repo being cloned')
+args = parser.parse_args()
 
-  -v    print version
-  -h    print help
-"""
-
-if len(sys.argv) == 1:
-    eprint(USAGE)
-    sys.exit(1)
-
-git_url = sys.argv[1]
 base_dir = os.getenv('GIT_PATH')
+default_prefix = os.getenv('GIT_GET_DEFAULT_PREFIX')
+git_url = args.git_url
 
-if git_url == '-v':
-    eprint(VERSION)
-    sys.exit(0)
-
-if git_url == '-h':
-    eprint(USAGE)
-    sys.exit(0)
-
+# Check GIT_PATH is set and exists
 if not base_dir:
     eprint('$GIT_PATH must be set')
     sys.exit(1)
-
 if not os.path.exists(base_dir):
     eprint('$GIT_PATH is set to %s, which does not exist.' % base_dir)
     sys.exit(1)
 
-default_prefix = os.getenv('GIT_GET_DEFAULT_PREFIX')
+# Add default prefix if not using ssh clone and it's set.
 if not git_url.endswith('.git') and default_prefix:
     git_url = default_prefix + git_url + '.git'
-    eprint('Cloning %s' % git_url)
+    eprint('Cloning %s' % args.git_url)
 
+# Prepend 'https://' for url parsing to work
 url_for_path_parsing = git_url
-if git_url.startswith('git@'):
-    url_for_path_parsing = 'https://' + git_url.replace(':', '/')
+if args.git_url.startswith('git@'):
+    url_for_path_parsing = 'https://' + args.git_url.replace(':', '/')
 
+# Attempt to parse the url
 try:
     parsed_url = urlparse(url_for_path_parsing)
     pathend = os.path.splitext(parsed_url.path)[0].strip('/')
     path = os.path.join(base_dir, parsed_url.hostname, pathend)
 except Exception:
-    eprint('Could not parse url %s' % git_url)
+    eprint('Could not parse url %s' % args.git_url)
     sys.exit(1)
 
-if os.path.exists(path):
-    eprint('Repository %s was already cloned.' % git_url)
+# Display repo directory if flag -d is set
+if args.directory:
     print(path)
     sys.exit(0)
 
+# Don't clone when not forced, and folder already exists
+if os.path.exists(path) and not args.force:
+    eprint('Repository %s was already cloned.' % args.git_url)
+    print(path)
+    sys.exit(0)
+
+# Remote repository if forced clone
+if os.path.exists(path) and args.force:
+    print(f'Removing repository for forced clone: {path}')
+    for root, dirs, files in os.walk(path, topdown=False):
+        for name in files:
+            os.remove(os.path.join(root, name))
+        for name in dirs:
+            os.rmdir(os.path.join(root, name))
+
+# Create parent directory for repo if it doesn't exist
 created_parent_dir = False
 parent_dir = os.path.dirname(path)
 if not os.path.exists(parent_dir):
     os.makedirs(parent_dir)
     created_parent_dir = True
 
+# Try to git clone
 try:
     subprocess.check_call(['git', 'clone', git_url, path])
 except subprocess.CalledProcessError:
