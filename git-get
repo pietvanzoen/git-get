@@ -27,13 +27,13 @@ if not base_dir:
     eprint('$GIT_PATH must be set')
     sys.exit(1)
 if not os.path.exists(base_dir):
-    eprint('$GIT_PATH is set to %s, which does not exist.' % base_dir)
+    eprint(f'$GIT_PATH is set to {base_dir}, which does not exist.')
     sys.exit(1)
 
 # Add default prefix if not using ssh clone and it's set.
 if not git_url.endswith('.git') and default_prefix:
     git_url = default_prefix + git_url + '.git'
-    eprint('Cloning %s' % args.git_url)
+    eprint(f'Cloning {args.git_url}')
 
 # Prepend 'https://' for url parsing to work
 url_for_path_parsing = git_url
@@ -46,18 +46,18 @@ try:
     pathend = os.path.splitext(parsed_url.path)[0].strip('/')
     path = os.path.join(base_dir, parsed_url.hostname, pathend)
 except Exception:
-    eprint('Could not parse url %s' % args.git_url)
+    eprint(f'Could not parse url {args.git_url}')
     sys.exit(1)
 
 # Don't clone when not forced, and folder already exists
 if os.path.exists(path) and not args.force:
-    eprint('Repository %s was already cloned.' % args.git_url)
+    eprint(f'Repository {args.git_url} was already cloned.')
     print(path)
     sys.exit(0)
 
 # Remote repository if forced clone
 if os.path.exists(path) and args.force:
-    print(f'Removing repository for forced clone: {path}')
+    eprint(f'Repository {path} already exists, deleting')
     for root, dirs, files in os.walk(path, topdown=False):
         for name in files:
             os.remove(os.path.join(root, name))
