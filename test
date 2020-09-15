@@ -35,6 +35,14 @@ main() {
     cd "$($INSTALL_DIR/git-get https://github.com/pietvanzoen/hint.git)"
     assert_equal $(pwd) "$GIT_PATH/github.com/pietvanzoen/hint" "returns repo path when it has already been cloned"
   )
+
+  (
+    echo "==> Testing when path exists and forced clone"
+    setup
+    $INSTALL_DIR/git-get https://github.com/pietvanzoen/hint.git
+    cd "$($INSTALL_DIR/git-get -f https://github.com/pietvanzoen/hint.git)"
+    assert_equal $(pwd) "$GIT_PATH/github.com/pietvanzoen/hint" "removes, reclones, and returns repo path"
+  )
 }
 
 setup() {
