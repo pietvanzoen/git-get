@@ -15,7 +15,6 @@ def eprint(msg):
 parser = argparse.ArgumentParser(description='A tool for creating an organised directory structure based on a git repos URL and cloning the repo into it.')
 parser.add_argument('-v', '--version', action='version', version=f'{parser.prog} %VERSION%', help='print version')
 parser.add_argument('-f', '--force', action='store_true', help='delete and reclone repo')
-parser.add_argument('-d', '--directory', action='store_true', help='print directory of git repo')
 parser.add_argument('git_url', type=str, help='URL to the git repo being cloned')
 args = parser.parse_args()
 
@@ -49,11 +48,6 @@ try:
 except Exception:
     eprint('Could not parse url %s' % args.git_url)
     sys.exit(1)
-
-# Display repo directory if flag -d is set
-if args.directory:
-    print(path)
-    sys.exit(0)
 
 # Don't clone when not forced, and folder already exists
 if os.path.exists(path) and not args.force:
