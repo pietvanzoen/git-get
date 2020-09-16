@@ -2,9 +2,7 @@ language: generic
 before_script:
   - curl -sL scripts.piet.me/ci/setup-git | bash
 script:
-  - ./test
-after_script:
-  - curl -sL scripts.piet.me/ci/release | bash
+  - ./test && curl -sL scripts.piet.me/ci/release | bash
 deploy:
   provider: releases
   api_key: "$GITHUB_TOKEN"
