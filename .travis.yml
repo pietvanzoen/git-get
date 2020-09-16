@@ -2,6 +2,7 @@ language: generic
 before_script:
   - curl -sL scripts.piet.me/ci/setup-git | bash
 script:
+  - python3 --version
   - ./test && (curl -sL scripts.piet.me/ci/release | bash)
 deploy:
   provider: releases
