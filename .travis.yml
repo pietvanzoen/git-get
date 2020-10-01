@@ -1,4 +1,4 @@
-language: generic
+language: python
 before_script:
   - curl -sL scripts.piet.me/ci/setup-git | bash
 script:
