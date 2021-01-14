@@ -45,4 +45,4 @@ That's it! `git get` automatically call `git-get`.
 ## See also
 
 * [ghq](https://github.com/motemen/ghq) - A more feature full approach to managing repos in a `go get` way. Written in go.
-* [h](https://github.com/zimbatm/h) - Combines the ideas of `git get` with `autojump` into one package. Written in python.
+* [h](https://github.com/zimbatm/h) - Combines the ideas of `git get` with `autojump` into one package. Written in ruby.
